@@ -241,7 +241,7 @@ cifar10_train_transform = torchvision.transforms.Compose(
         # torchvision.transforms.RandomAffine(12, (0.12, 0.12)),
         # torchvision.transforms.RandomCrop(32, padding=4, padding_mode="edge"),
         torchvision.transforms.RandomHorizontalFlip(),
-        with_prob(func_chain(rot_crop, elastic), 0.5),
+        with_prob(func_chain(rot_crop, elastic), 1.5),
         auto_aug,
         cifar10_normalization
     ]

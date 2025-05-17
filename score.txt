@@ -97,3 +97,39 @@ Iˈ0.000 loss: train: 0.248 test: 0.449
 Iˈ0.001 accuracy, train: 94.0% test: 91.1%
 Iˈ0.000 loss: train: 0.131 test: 0.416
 Iˈ0.001 accuracy, train: 97.0% test: 91.8%
+
+# ResnetSmall
+# with pick, no activation
+Iˈ0.000 loss: train: 0.348 test: 0.415
+Iˈ0.001 accuracy, train: 91.9% test: 90.6%
+Iˈ0.000 loss: train: 0.298 test: 0.436  # 30000 train, first and second with pick
+Iˈ0.001 accuracy, train: 93.2% test: 90.6%
+Iˈ0.000 loss: train: 0.341 test: 0.465  # 20k train, first and second with pick
+Iˈ0.001 accuracy, train: 92.2% test: 90.0%
+Iˈ0.000 loss: train: 0.294 test: 0.437  # 30k train, first and second with pick
+Iˈ0.001 accuracy, train: 93.2% test: 90.6%
+Iˈ0.000 loss: train: 0.518 test: 0.387  # aug1, 30k train, first and second with pick
+Iˈ0.001 accuracy, train: 87.5% test: 90.9%
+Iˈ0.000 loss: train: 0.543 test: 0.397  # aug1, 30k train, first and second with pick
+Iˈ0.001 accuracy, train: 86.9% test: 90.7%
+Iˈ0.000 loss: train: 0.308 test: 0.399  # 30k train, first resblock only, second with pick
+Iˈ0.001 accuracy, train: 92.9% test: 91.4%
+Iˈ0.000 loss: train: 0.374 test: 0.429  # 30k train, no pick at all, normal ResnetSmall
+Iˈ0.001 accuracy, train: 91.5% test: 90.5%
+Iˈ0.000 loss: train: 0.361 test: 0.434  # 30k train, no pick at all, normal ResnetSmall
+Iˈ0.001 accuracy, train: 91.6% test: 90.2%
+Iˈ0.000 loss: train: 0.610 test: 0.401  # aug1, 30k train, no pick at all, normal ResnetSmall
+Iˈ0.001 accuracy, train: 85.2% test: 90.5%
+Iˈ0.000 loss: train: 0.581 test: 0.399  # aug1, 30k train, no pick at all, normal ResnetSmall
+Iˈ0.001 accuracy, train: 85.9% test: 90.9%
+Iˈ0.000 loss: train: 0.636 test: 0.420  # aug1, 30k train, no pick at all, normal ResnetSmall
+Iˈ0.001 accuracy, train: 84.7% test: 89.9%
+
+Iˈ0.000 loss: train: 0.326 test: 0.445  # no first short-cut
+Iˈ0.001 accuracy, train: 92.4% test: 90.3%
+
+# relu6 on pick
+Iˈ0.000 loss: train: 0.357 test: 0.433
+Iˈ0.001 accuracy, train: 91.7% test: 90.2%
+Iˈ0.000 loss: train: 0.358 test: 0.432
+Iˈ0.001 accuracy, train: 91.8% test: 90.2%

@@ -158,6 +158,13 @@ class ResNet9(nn.Module):
         return loss
 
 
+def pick_block(channels: int):
+    conv = nn.Conv2d(in_channels=channels, out_channels=channels, kernel_size=1, groups=channels, bias=False)
+    return conv
+    # torch.nn.init.constant_(conv.weight, 1.0)
+    # return nn.Sequential(*layers)
+
+
 class ResNet9Small(nn.Module):
     def __init__(self, in_channels, num_classes, device):
         super().__init__()
@@ -173,16 +180,19 @@ class ResNet9Small(nn.Module):
         self.conv4 = conv_block_resnet9(64, 128, pool=True)
         self.res2 = nn.Sequential(conv_block_resnet9(128, 128), conv_block_resnet9(128, 128))
 
+        self.pick2 = pick_block(32)
+        self.pick4 = pick_block(128)
+
         self.classifier = nn.Sequential(nn.MaxPool2d(4), nn.Conv2d(128, 10, 1), nn.Flatten())
         self.to(self.device)
 
     def forward(self, xb):
         out = self.conv1(xb)
         out = self.conv2(out)
-        out = self.res1(out)+ out
+        out = self.res1(out) + self.pick2(out)
         out = self.conv3(out)
         out = self.conv4(out)
-        out = self.res2(out)  + out
+        out = self.res2(out) + self.pick4(out)
         out = self.classifier(out)
         return out
 
