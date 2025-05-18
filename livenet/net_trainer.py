@@ -55,6 +55,7 @@ class NetTrainer:
         self.clear_life_stat = True
 
     def step(self, n_steps=1):
+        self._need_to_stop = False
         for _ in range(n_steps):
             if self._need_to_stop:
                 LOG("stopped")

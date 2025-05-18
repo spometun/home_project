@@ -198,11 +198,13 @@ class ResNet9Small(nn.Module):
 
     def internal_loss(self):
         loss = torch.tensor(0., device=self.device)
-        size={0: 32, 1: 32, 2: 16, 3: 16, 4: 16, 5: 8, 6: 4, 7:4, 8:1}
+        size={0: 32, 1: 32, 2: 16, 3: 16, 4: 16, 5: 8, 6: 4, 7:4, 8:16, 9:12.0, 10:12.0}
         params = list(self.parameters())
-        for i in range(9):
+        for i in range(11):
             mult = size[i] * size[i]
             ind = i * 4
+            if ind >= 36:
+               ind = 32 + (i - 8)
             p = params[ind]
             summa = torch.sum(torch.abs(p))
             loss += self._alpha * mult * summa
