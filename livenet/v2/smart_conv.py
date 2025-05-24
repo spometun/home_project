@@ -12,6 +12,7 @@ class SmartConv(nn.Module):
                  padding: int| tuple[int, int]=0, groups=1, bias=True):
         # if input padding is None, padding will be auto-chosen to make input and output resolution the same
         super().__init__()
+        self.naive_forward = False
         assert in_channels % groups == 0, f"in_channels ({in_channels}) must be divisible by groups ({groups})"
         assert out_channels % groups == 0, f"out_channels ({out_channels}) must be divisible by groups ({groups})"
         self.in_channels = in_channels
@@ -29,8 +30,10 @@ class SmartConv(nn.Module):
         self._reset_parameters()
 
     def forward(self, x: Tensor) -> Tensor:
-        # output = self._forward_im2col(x)
-        output = self._forward_direct_loop(x)
+        if self.naive_forward:
+            output = self._forward_direct_loop(x)
+        else:
+            output = self._forward_im2col(x)
         return output
 
     def _forward_direct_loop(self, x: Tensor) -> Tensor:
@@ -133,6 +136,10 @@ def test_smart_conv(conv_pairs_and_input):
     conv_ref, conv_custom, x = conv_pairs_and_input
     out_ref = conv_ref(x)
     out_custom = conv_custom(x)
-    max_diff = (out_ref - out_custom).abs().max().cpu().item()
+    conv_custom.naive_forward = True
+    out_custom_naive = conv_custom(x)
     atol = 1e-6
+    max_diff = (out_ref - out_custom).abs().max().cpu().item()
+    assert max_diff < atol, f"Max diff {max_diff} exceeds tolerance {atol}"
+    max_diff = (out_ref - out_custom_naive).abs().max().cpu().item()
     assert max_diff < atol, f"Max diff {max_diff} exceeds tolerance {atol}"
