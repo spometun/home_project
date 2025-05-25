@@ -5,9 +5,11 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from torch import Tensor
+from torch import compile
+torch._dynamo.config.force_parameter_static_shapes = False 
 
 
-class SmartConv(nn.Module):
+class SmartConv2d(nn.Module):
     def __init__(self, in_channels: int, out_channels: int, kernel_size: int | tuple[int, int],
                  padding: int| tuple[int, int]=0, groups=1, bias=True):
         # if input padding is None, padding will be auto-chosen to make input and output resolution the same
@@ -27,10 +29,13 @@ class SmartConv(nn.Module):
         )
         if bias:
             self.bias = nn.Parameter(torch.empty(out_channels))
+        else:
+            self.bias = nn.Parameter(torch.zeros(out_channels), requires_grad=False)
         self._reset_parameters()
+        self.forward = compile(self.forward, dynamic=True)
 
     def forward(self, x: Tensor) -> Tensor:
-        if self.naive_forward:
+        if not self.naive_forward:
             output = self._forward_direct_loop(x)
         else:
             output = self._forward_im2col(x)
@@ -63,10 +68,9 @@ class SmartConv(nn.Module):
                     w_ = w.reshape(len_g, -1)
                     out_hw = feature_x_ @ w_.T
                     out[:, g*len_g:(g+1)*len_g, h0+ph, w0+pw] = out_hw
-        if self.bias is not None:
-            out += self.bias[:, None, None]
+        # if self.bias is not None:
+        out += self.bias[:, None, None]
         return out
-
 
     def _forward_im2col(self, x: Tensor) -> Tensor:
         N, C_in, H, W = x.shape
@@ -86,8 +90,8 @@ class SmartConv(nn.Module):
             outg = wg[g] @ xg[:, g, :, :]
             out_groups.append(outg)
         out_unfold = torch.cat(out_groups, dim=1)
-        if self.bias is not None:
-                    out_unfold += self.bias[:, None]
+        # if self.bias is not None:
+        out_unfold += self.bias[:, None]
         out = out_unfold.view(N, self.out_channels, out_h, out_w)
         return out
 
@@ -97,8 +101,8 @@ class SmartConv(nn.Module):
        bound = math.sqrt(6.0 / fan_in)
        with torch.no_grad():
            self.weight.uniform_(-bound, bound)
-           if self.bias is not None:
-                    self.bias.zero_()
+           if self.bias.requires_grad:
+               self.bias.uniform_(-bound / math.sqrt(6), bound / math.sqrt(6))
                 
                 
 def pytest_configure(config):
@@ -122,7 +126,7 @@ def conv_pairs_and_input(request):
     W = params['W']
 
     conv_ref = nn.Conv2d(in_channels, out_channels, kernel_size=kernel_size, padding=padding, groups=groups)
-    conv_custom = SmartConv(in_channels, out_channels, kernel_size=kernel_size, padding=padding, groups=groups)
+    conv_custom = SmartConv2d(in_channels, out_channels, kernel_size=kernel_size, padding=padding, groups=groups)
 
     with torch.no_grad():
         conv_custom.weight.view(-1)[:] = conv_ref.weight.view(-1)
