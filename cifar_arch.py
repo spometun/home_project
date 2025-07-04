@@ -183,7 +183,7 @@ class ResNet9Small(nn.Module):
         self.pick2 = pick_block(32)
         self.pick4 = pick_block(128)
 
-        self.classifier = nn.Sequential(nn.MaxPool2d(4), nn.Conv2d(128, 10, 1), nn.Flatten())
+        self.classifier = nn.Sequential(nn.MaxPool2d(4), nn.Conv2d(128, num_classes, 1), nn.Flatten())
         self.to(self.device)
 
     def forward(self, xb):

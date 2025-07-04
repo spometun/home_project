@@ -31,7 +31,7 @@ def get_summary_stat(life_stat: pd.DataFrame):
 
 class NetTrainer:
     def __init__(self, network: torch.nn.Module, data_loader,
-                 criterion: typing.Callable, optimizer, adaptive_lr=False):
+                 criterion: typing.Callable, optimizer, adaptive_lr=True):
         self.network = network
         self.data_loader = data_loader
         self.data_iter = iter(data_loader)
@@ -125,14 +125,9 @@ class NetTrainer:
             if self.optimizer.learning_rate < self.adaptive_lr_min_lr:
                 self._need_to_stop = True
 
-        df = pd.DataFrame(self.network.context.life_stat)
-        if len(df) > 0:
-            df = df[df["tick"] > self.last_epoch_tick]
-            msg += f" {get_summary_stat(df)}"
-        if self.clear_life_stat:
-            self.network.context.life_stat = []
-
         LOG(msg)
+        m = self.network.get_stats_strs(clear=True)
+        LOG(m)
         self.loss_criterion = 0.0
         self.loss_network = 0.0
         self.counter_good = 0
