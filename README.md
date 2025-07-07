@@ -19,4 +19,4 @@ To achieve this, two ideas are employed:
 - Dynamic computational complexity of network (for simpler parts of the image, e.g. big patch of blue sky, it would use less amount of operations)
 For this I started to implement custom conv layer capable of doing self-observation and dynamic masking during its work.
 Dynamic computational complexity would be efficiently achieved, as RELU outputs a often zeros, and for no further processing required at next layer for such outputs.
-Given my custom conv layers a smart, they aim to L1-penealize actual operations, not weights. 
+Given my custom conv layers are smart, they aim to L1-penealize actual operations, not weights.
