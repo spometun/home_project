@@ -1,13 +1,14 @@
-### Personal research project on AI basics, using CIFAR10 as a toy dataset. 
+## Personal research project on AI basics, using CIFAR10 as a toy dataset. 
 
-## V1. Dynamically killing uneccesary neurons
+### V1. Dynamically killing uneccesary neurons
 Implemented per-single-neuron dynamic graph with capability of death of useless neurons, dynamic birth was also in mind, but never implemented.
 Neurons where brought to "useless" state by imposing reasonable L1 regularization. Those which started to jump around zero, eventially die in course of training.
-With this approach, I was able to obtain 2-layer perceptron, whith 40 neurons in total, which classifies CIFAR10 with 30% accuracy (todo: run again and check exact numbers)
+With this approach, I was able to obtain 2-layer perceptron, whith 40 neurons in total, which classifies CIFAR10 with 30% accuracy 
+(Todo: run again and check exact numbers)
 
 After a while I decided that implementing larger convolutional classifier using per-single-neuron graph is not practical and moved to V2. 
 
-## V2. Smart custom convolutional layers (work in progress)
+### V2. Smart custom convolutional layers (work in progress)
 Goal: Classify CIFAR10 dataset within as small amount of operations as possible.
 Operations are counted as single scalar multiply-add, as they would run on general purpose CPU, without GMM structure.
 To achieve this, two ideas are employed:
