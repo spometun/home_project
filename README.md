@@ -1,6 +1,6 @@
 ## Personal research project on AI basics, using CIFAR10 as a toy dataset
 Summary: Attempt to classify CIFAR10 with as small amount of operations as possible.
-Unused single neurons' death and dynamic graph computational complexity are examined and employed.
+Unused single neurons' death and dynamic graph computational complexity are examined and employed
 
 ### V1. Dynamically killing uneccesary neurons
 #### Goal: Examine death of uneccessary neurons in flexible "any topology" per-single neuron graph.
